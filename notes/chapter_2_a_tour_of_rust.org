@@ -47,6 +47,22 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 
 ** Derive attribute
 
+** Complex number type
+
+** Generic structures
+
+** Option type
+
+** ~usize~
+
+** Enumerated types (enums)
+
+** Iterating
+
+** Generic functions
+
+** Tuples
+
 ** Questions to return to and answer
 - What is a Mutex!?
 
