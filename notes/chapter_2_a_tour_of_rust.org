@@ -32,8 +32,10 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 #+end_src
 
 ** Vectors
+*** ~vec!~ macro
 
 ** Error are values with Result
+*** The ~?~ operator
 
 ** Macros
 
@@ -63,6 +65,9 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 
 ** Tuples
 
-** Questions to return to and answer
-- What is a Mutex!?
+** Type conversion
 
+** Release build
+
+* Questions to return to and answer
+** What is a Mutex!?
