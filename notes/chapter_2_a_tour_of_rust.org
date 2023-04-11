@@ -49,8 +49,6 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 
 ** Derive attribute
 
-** Complex number type
-
 ** Generic structures
 
 ** Option type
@@ -60,6 +58,7 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 ** Enumerated types (enums)
 
 ** Iterating
+*** Skiping entries
 
 ** Generic functions
 
@@ -68,6 +67,13 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 ** Type conversion
 
 ** Release build
+
+** The match statement
+
+** forcing process to end
+#+begin_src rust
+std::process::exit(1);
+#+end_src
 
 * Questions to return to and answer
 ** What is a Mutex!?
