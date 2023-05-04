@@ -1,5 +1,44 @@
+* Table of content :toc:
+- [[#programming-rust-chapter-2-a-tour-of-rust][Programming Rust: Chapter 2 A Tour of Rust]]
+  - [[#function-variables-and-numbers][Function, variables and numbers]]
+  - [[#rust-builtin-test-driven-development][Rust builtin test driven development]]
+  - [[#importing][Importing]]
+  - [[#vectors][Vectors]]
+  - [[#error-are-values-with-result][Error are values with Result]]
+  - [[#macros][Macros]]
+  - [[#referencing-and-borrowing][Referencing and borrowing]]
+  - [[#adding-dependencies-to-the-project][Adding dependencies to the project]]
+  - [[#closure][Closure]]
+  - [[#structure-type][Structure type]]
+  - [[#derive-attribute][Derive attribute]]
+  - [[#generic-structures][Generic structures]]
+  - [[#option-type][Option type]]
+  - [[#usize][~usize~]]
+  - [[#enumerated-types-enums][Enumerated types (enums)]]
+  - [[#iterating][Iterating]]
+  - [[#generic-functions][Generic functions]]
+  - [[#tuples][Tuples]]
+  - [[#type-conversion][Type conversion]]
+  - [[#release-build][Release build]]
+  - [[#the-match-statement][The match statement]]
+  - [[#forcing-process-to-end][forcing process to end]]
+- [[#questions-to-return-to-and-answer][Questions to return to and answer]]
+  - [[#what-is-a-mutex][What is a Mutex!?]]
+  - [[#how-to-specify-types-to-someone-whos-not-worked-in-a-typed-language-or-a-new-programmer-who-isnt-aware-of-types][How to specify types to someone whos not worked in a typed language or a new programmer who isn't aware of types.]]
+
 * Programming Rust: Chapter 2 A Tour of Rust
 ** Function, variables and numbers
+We can declare functions in Rust using the keyword ~fn~. Functions in rust are typed. Meaning the arguments a function takes need to have a type specified to them.
+Not only that, the return type, must also be given a type, if it is returning something that is. If not, the return type can be omitted.
+
+The function's arguments are typed by giving them a name followed by a colon and the type of the argument must be.
+A function's return type is specified after the function's argument list with the arrow operator (~->~) Followed by the type the function will return.
+We declare a variable using the keyword ~let~ similar to in JavaScript. A variables type may be omitted if it's inferable from context what type it will be.
+This is recommended, Rust is really good at inferring types.
+
+In Rust there exist the ~return~ keyword. Though it is recommended that it is only used when returning early, such as in an if expression.
+A function will always return it's last expression that ends without a semicolon.
+Examples of all of the above are below. 
 #+begin_src rust
 fn gcd(mut n: u64, mut m: u64) -> u64 {
     assert!(n != 0 && m != 0);
@@ -15,7 +54,21 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 }
 #+end_src
 
-** Rust builtin TDD
+** Rust builtin test driven development
+*** Test attributes
+Rust comes with built in test driven development. It uses something called test attributes (~#[test]~) to achieve this.
+By putting a test attribute atop of a function we tell the Rust compiler that the function declared directly after it is a test that should only be ran when we ask it to and ignored every other time.
+
+An attribute is a way to control compiler flow. We can use it to determine what gets done by the compiler in certain context.
+In the context of this function we are telling the compiler to only acknowledge (compile) these function's if we are running our tests
+
+*** Asserting things
+There are a few ways to assert things in Rust and a great place to use them are in tests so why not take the opportunity to go into it now.
+The two we are going to go into now is ~assert_eq!~ macro and the ~assert!~ macro.
+
+The ~assert!~ is a macro that takes something that evaluates to true or false, if it's false it panics otherwise it passes.
+The ~assert_eq!~ macro those the same thing but those the comparing itself. So it takes to arguments and evaluates them to see if they are true or false, if true it passes otherwise it panics.
+
 #+begin_src rust
   #[test]
   fn test_gcd() {
@@ -26,16 +79,63 @@ fn gcd(mut n: u64, mut m: u64) -> u64 {
 #+end_src
 
 ** Importing
+We can import things into rust by using the ~use~ keyword.
 #+begin_src rust
   use std::str::FromStr;
   use std::env;
 #+end_src
 
 ** Vectors
+Vectors are expandable lists.
+Vectors are generic, this means that it is a data structure that isn't limited to being used only for one data type.
+All elements of a vector must have the same type.
+The types inside a vector must be either specified or obvious to the compiler at compile time.
+We can declare a vector variable like so
+#+begin_src rust
+let this_is_a_vector: Vec<String>;
+#+end_src
+
+You can declare a new vector using the new method.
+#+begin_src rust
+let vector = Vec::new();
+#+end_src
+There are more ways to create a vector like the method ~with_capacity~ and other methods outlined in [[https://doc.rust-lang.org/std/vec/struct.Vec.html][Vec at the rust docs]].
+
+The only other way to create the a vector we will talk about here is the ~vec!~ macro.
 *** ~vec!~ macro
+The vector macro allows us to declare a vector how we would an array.
+It can handle to flavours of declaration. One where we list all the elements the vector will have to begin with.
+Another where we specify the number of elements it will contain and what we will use to pad out the space.
+#+begin_src rust
+  let a_vec = vec![38, 48, 83, 18];
+  let another_vec = vec![88; 0];
+#+end_src
 
 ** Error are values with Result
+Rust has the ~Result~ type. This is a union type. It can be one of two values, ~Err(error)~ or an ~Ok(value)~.
+I like to think of union types that carry a value with them as a mailman type (probably because I come from Elm). They carry something, a package, a letter something with them. It's a way of wrapping values.
+
+We can access the value the mailman is carrying in a few ways. One is using the match expression. This expression is how we deal with union types in general.
+#+begin_src rust
+let result = Ok(3);
+
+match result {
+    Ok(numb) => {
+        // do some stuff with the number
+    },
+    Err(error) => {
+        // handle errors
+        printf!("{}", error);
+    }
+}
+#+end_src
+
+There are other ways to handle a ~Result~ type. Rust provides some methods for it. For example the ~unwrap~ and ~panic~ methods. These aren't recommended to be used outside of prototyping as they panic if the value is a ~Err~.
+The standard Library also provides us a ~map~ and ~map_err~ (as well as others) methods to deal with the value being carried by our mailman.
+
 *** The ~?~ operator
+Because returning an error value up the call chain is so idiomatic to Rust it has the ~?~. All it does is, if the value is a ~Ok~ it unwraps the value and if it's a ~Err~ it will return it from the function where it's being used.
+As you can imagine, there are a few rules that this follows. Typically the ~?~ can't be used in the main function. It can only be used in functions that have a return type of ~Result<result_type, error_type>~.
 
 ** Macros
 
@@ -77,3 +177,4 @@ std::process::exit(1);
 
 * Questions to return to and answer
 ** What is a Mutex!?
+** How to specify types to someone whos not worked in a typed language or a new programmer who isn't aware of types.
